@@ -1,0 +1,97 @@
+project:
+    name: AI Invoice Auditor
+    description: Agentic AI-powered multilingual invoice validation system
+    data_source: /data/incoming
+    orchestration_framework: LangGraph
+    llm_gateway: LiteLLM
+
+agents:
+    invoice_monitor_agent:
+    file: agents/monitor_agent.py
+    agent_name: Invoice Monitor Agent
+    persona: System Watchdog
+    role: Detect new invoices and trigger workflow
+    core_responsibility:
+        - Monitor data/incoming folder
+        - Detect invoice attachments
+        - Read matching email metadata files
+        - Trigger Extractor Agent
+    uses_llm: false
+    model: null
+
+extractor_agent:
+    file: agents/extractor_agent.py
+    agent_name: Extractor Agent
+    persona: Document Parser
+    role: Extract text and tables using OCR
+    core_responsibility:
+        - Parse PDF using pdfplumber
+        - Parse DOCX using python-docx
+        - Parse PNG using pytesseract
+        - Extract invoice header and line items
+    uses_llm: false
+    model: null
+
+translation_agent:
+    file: agents/translation_agent.py
+    agent_name: Translation Agent
+    persona: Multilingual Translator
+    role: Translate invoice to English
+    uses_llm: true
+    model: bedrock/cohere.command-r-plus-v1:0
+
+invoice_data_validation_agent:
+    file: agents/validation_agent.py
+    agent_name: Invoice Data Validation Agent
+    persona: Data Auditor
+    role: Validate structure, totals, fields
+    uses_llm: true
+    model: bedrock/amazon.nova-lite-v1:0
+
+business_validation_agent:
+    file: agents/validation_agent.py
+    agent_name: Business Validation Agent
+    persona: ERP Auditor
+    role: Compare invoice vs ERP data
+    uses_llm: true
+    model: bedrock/amazon.nova-lite-v1:0
+
+reporting_agent:
+    file: agents/reporting_agent.py
+    agent_name: Reporting Agent
+    persona: Compliance Reporter
+    role: Generate reports and recommendations
+    uses_llm: true
+    model: bedrock/amazon.nova-lite-v1:0
+
+rag_indexing_agent:
+    file: agents/rag_agents/indexing_agent.py
+    agent_name: RAG Indexing Agent
+    persona: Invoice Knowledge Indexer
+    role: Index reports into FAISS
+    uses_llm: false
+    model: null
+
+rag_retrieval_agent:
+    file: agents/rag_agents/retrieval_agent.py
+    agent_name: RAG Retrieval Agent
+    persona: Context Retriever
+    role: Retrieve relevant invoice chunks
+    uses_llm: false
+    model: null
+
+rag_generation_agent:
+    file: agents/rag_agents/generation_agent.py
+    agent_name: RAG Generation Agent
+    persona: Invoice Support Assistant
+    role: Answer invoice questions
+    uses_llm: true
+    model: bedrock/cohere.command-r-plus-v1:0
+
+rag_reflection_agent:
+    file: agents/rag_agents/reflection_agent.py
+    agent_name: RAG Reflection Agent
+    persona: RAG Quality Evaluator
+    role: Evaluate answer using RAG Triad
+    uses_llm: true
+    model: bedrock/cohere.command-r-plus-v1:0
