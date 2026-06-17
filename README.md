@@ -12,8 +12,6 @@ Each invoice is represented by:
 data/incoming/
 ├── INV_EN_001.pdf
 ├── INV_EN_001.meta.json
-├── INV_EN_002.pdf
-├── INV_EN_002.meta.json
 ├── INV_ES_003.pdf
 ├── INV_ES_003.meta.json
 ├── INV_DE_004.docx
@@ -83,9 +81,3 @@ for f in os.listdir(source):
         shutil.copy(os.path.join(source, f), target)
         print(f"Simulated email arrival: {f}")
         time.sleep(15)
-
-
----
-
-*Prepared by: Dr.Meenakshi.H.N, ETA, Infosys, Full Stack Agentic AI Course*  
-*Version: v1.0 – October 2025*
