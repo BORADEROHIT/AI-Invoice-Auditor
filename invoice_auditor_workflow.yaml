@@ -1,0 +1,50 @@
+workflow:
+  name: AI Invoice Auditor Workflow
+  orchestration_framework: LangGraph
+
+nodes:
+  - monitor_invoice
+  - extract_invoice
+  - translate_invoice
+  - validate_invoice_data
+  - validate_business_rules
+  - generate_report
+  - index_for_rag
+  - human_review
+
+edges:
+  - from: monitor_invoice
+    to: extract_invoice
+
+  - from: extract_invoice
+    to: translate_invoice
+
+  - from: translate_invoice
+    to: validate_invoice_data
+
+  - from: validate_invoice_data
+    to: validate_business_rules
+
+  - from: validate_business_rules
+    to: generate_report
+
+  - from: generate_report
+    to: index_for_rag
+
+  - from: index_for_rag
+    to: human_review
+    
+state:
+  - file_path
+  - file_type
+  - email_metadata
+  - raw_text
+  - translated_text
+  - invoice_data
+  - missing_fields
+  - validation_discrepancies
+  - business_discrepancies
+  - recommendation
+  - report_json_path
+  - report_html_path
+
